@@ -5,7 +5,8 @@
 ### npm run dev
 
 執行爬取資料
-build ts -> js
+build 
+ts -> js
 
 ### write data/info.json
 
