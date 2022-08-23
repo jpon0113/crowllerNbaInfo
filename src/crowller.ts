@@ -14,16 +14,16 @@ class Crowller {
 	constructor(private url: string, private analyzer: Analyzer) {
 		this.initSpiderProcess();
 	}
-	async initSpiderProcess() {
+	private async initSpiderProcess() {
 		const html = await this.getRawHtml();
 		const writeInfos = this.analyzer.analyze(html, this.filePath);
 		this.writeFile(writeInfos);
 	}
-	async getRawHtml() {
+	private async getRawHtml() {
 		const result = await superagent.get(this.url);
 		return result.text;
 	}
-	writeFile(content: string) {
+	private writeFile(content: string) {
 		fs.writeFileSync(this.filePath, content);
 	}
 }
