@@ -1,62 +1,34 @@
 import fs from 'fs';
 import path from 'path';
 import superagent from 'superagent';
-import cheerio from 'cheerio';
+import NbaAnalyzer from './nbaAnalyzer';
 
-interface TitleInfo {
-	title: string;
-	href: string;
-}
-
-interface CourseResult {
-	time: number;
-	data: TitleInfo[];
-}
-
-interface Content {
-	[propName: number]: TitleInfo[];
+export interface Analyzer {
+	analyze: (html: string, filePath: string) => string;
 }
 
 class Crowller {
-	private url = 'https://www.nba.com';
+	// 寫入 target
+	private filePath = path.resolve(__dirname, '../data/info.json');
 
-	constructor() {
+	constructor(private url: string, private analyzer: Analyzer) {
 		this.initSpiderProcess();
 	}
 	async initSpiderProcess() {
-		const filePath = path.resolve(__dirname, '../data/info.json');
 		const html = await this.getRawHtml();
-		const crowllerInfos = this.getCourseInfo(html);
-		const writeInfos = this.generateJsonContent(crowllerInfos);
-		fs.writeFileSync(filePath, JSON.stringify(writeInfos));
+		const writeInfos = this.analyzer.analyze(html, this.filePath);
+		this.writeFile(writeInfos);
 	}
 	async getRawHtml() {
 		const result = await superagent.get(this.url);
 		return result.text;
 	}
-	getCourseInfo(html: string) {
-		const $ = cheerio.load(html);
-		const title = $('.youtube');
-		const titleInfos: TitleInfo[] = [];
-		title.map((index, element) => {
-			const title = element.attribs.title;
-			const href = element.attribs.href;
-			titleInfos.push({ title, href });
-		});
-		return {
-			time: new Date().getTime(),
-			data: titleInfos,
-		};
-	}
-	generateJsonContent(crowllerInfo: CourseResult) {
-		const filePath = path.resolve(__dirname, '../data/info.json');
-		let fileContent: Content = {};
-		if (fs.existsSync(filePath)) {
-			fileContent = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-		}
-		fileContent[crowllerInfo.time] = crowllerInfo.data;
-		return fileContent;
+	writeFile(content: string) {
+		fs.writeFileSync(this.filePath, content);
 	}
 }
+// 爬蟲 source
+const url = 'https://www.nba.com';
 
-const crowller = new Crowller();
+const analyzer = new NbaAnalyzer();
+new Crowller(url, analyzer);
