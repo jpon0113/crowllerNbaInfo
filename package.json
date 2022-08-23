@@ -1,10 +1,16 @@
 {
-  "name": "crowller_nba_info",
+  "name": "crowller_nba_info_example",
   "version": "1.0.0",
   "description": "爬取NBA網站資訊",
-  "main": "index.js",
   "scripts": {
-    "dev": "ts-node ./src/crowller.ts"
+    "dev:build": "tsc -w",
+    "dev:start": "nodemon node ./build/crowller.js",
+    "dev": "concurrently npm:dev:*"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "data/*"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -12,6 +18,8 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.14",
     "@types/superagent": "^4.1.4",
+    "concurrently": "^5.0.0",
+    "nodemon": "^2.0.1",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2"
   },
