@@ -17,6 +17,16 @@ interface Content {
 }
 
 export default class NbaAnalyer implements Analyzer {
+	private static instance: NbaAnalyer;
+	private constructor() {}
+
+	static getInstance() {
+		if (!NbaAnalyer.instance) {
+			NbaAnalyer.instance = new NbaAnalyer();
+		}
+		return NbaAnalyer.instance;
+	}
+
 	private getInfo(html: string) {
 		const $ = cheerio.load(html);
 		const title = $('.youtube');
@@ -31,7 +41,7 @@ export default class NbaAnalyer implements Analyzer {
 			data: titleInfos,
 		};
 	}
-	generateJsonContent(crowllerInfo: Result, filePath: string) {
+	private generateJsonContent(crowllerInfo: Result, filePath: string) {
 		let fileContent: Content = {};
 		if (fs.existsSync(filePath)) {
 			fileContent = JSON.parse(fs.readFileSync(filePath, 'utf-8'));

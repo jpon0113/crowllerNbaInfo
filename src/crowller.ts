@@ -30,5 +30,5 @@ class Crowller {
 // 爬蟲 source
 const url = 'https://www.nba.com';
 
-const analyzer = new NbaAnalyzer();
+const analyzer = NbaAnalyzer.getInstance();
 new Crowller(url, analyzer);
