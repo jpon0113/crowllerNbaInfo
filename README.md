@@ -5,7 +5,9 @@
 ### npm run dev
 
 執行爬取資料
+build ts -> js
 
 ### write data/info.json
 
 資料會寫入至 info.json
+
